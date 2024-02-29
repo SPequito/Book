@@ -14,22 +14,18 @@ class frameApp(customtkinter.CTk):
         self._set_appearance_mode('dark')
         self.minsize(600,600)
 
-        textBox = CTkLabel(self,text=("First Name"))
-        textBox.grid(row=0,column=0,padx=5,pady=5)
-        textField = CTkTextbox(self)
-        textField.grid(row=0,column=2,padx=5,pady=5)
-        
-        
-        
-        
-        
-        
-        
-        #add_button = CTkButton(master=self,text=("Update"))
-        #add_button.grid(row=2,column=60)
-        
-
+        textBoxes.text_boxes(self,"First Name",0,0,5,5)
+        textBoxes.text_boxes(self,"Last Name",1,0,5,5)
+        textBoxes.text_boxes(self,"Phone",2,0,5,5)
+        textBoxes.text_boxes(self,"Address",3,0,5,5)
+        textBoxes.text_boxes(self,"Email",4,0,5,5)
         self.mainloop()
+        
+class textBoxes():
+    def text_boxes(self, text, row, column, padx, pady):     
+        textBox = CTkLabel(self ,text=(text),padx=padx,pady=pady, width=70,height=5)
+        textBox.grid(row=row,column=column,padx=padx,pady=pady)  
+     
         
     
 
