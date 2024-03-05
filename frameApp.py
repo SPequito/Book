@@ -1,31 +1,82 @@
 #using customtkinter because give more set for the appearance 
 import customtkinter
-from tkinter import *
+from tkinter import ttk
 from customtkinter import *
 import tkinter as tk
 
 class frameApp(customtkinter.CTk):
     def __init__(self):
-        
+
         #main setup build my frame
         super().__init__()   
         self.title('Book app')
-        self.geometry('600x600')
         self._set_appearance_mode('dark')
-        self.minsize(600,600)
+        
+        #using ctkframe to create a new frame inside the main frame to be more easy to manipulate 
+        frame = tk.LabelFrame(self)
+        frame.pack()
+        
+        # change to tk.labelframe because with the ctklabel its not inserting text 
+        widget_frame = tk.LabelFrame(frame, text= "Insert Data")
+        widget_frame.grid(row=0,column=0,sticky='ew')
 
-        textBoxes.text_boxes(self,"First Name",0,0,5,5)
-        textBoxes.text_boxes(self,"Last Name",1,0,5,5)
-        textBoxes.text_boxes(self,"Phone",2,0,5,5)
-        textBoxes.text_boxes(self,"Address",3,0,5,5)
-        textBoxes.text_boxes(self,"Email",4,0,5,5)
+
+        #calling class textBoxes to create them
+        textBoxes.text_boxes(widget_frame,"First Name",0,0,5,5)
+        textBoxes.text_boxes(widget_frame,"Last Name",1,0,5,5)
+        textBoxes.text_boxes(widget_frame,"Phone",2,0,5,5)
+        textBoxes.text_boxes(widget_frame,"Address",3,0,5,5)
+        textBoxes.text_boxes(widget_frame,"Email",4,0,5,5)
+        
+       #calling class textField to create them
+        textField.text_field(widget_frame,0,1,5,5,'Only accept words')
+        textField.text_field(widget_frame,1,1,5,5,'Only accept words')
+        textField.text_field(widget_frame,2,1,5,5,'Only accept numbers')
+        textField.text_field(widget_frame,3,1,5,5,'Accept any number or words')
+        textField.text_field(widget_frame,4,1,5,5,'Accept any number or words and need @')
+        
+        #calling our database frame
+        frameDatabase.frame_database(frame)
+        
+        
         self.mainloop()
         
 class textBoxes():
-    def text_boxes(self, text, row, column, padx, pady):     
-        textBox = CTkLabel(self ,text=(text),padx=padx,pady=pady, width=70,height=5)
-        textBox.grid(row=row,column=column,padx=padx,pady=pady)  
+    #using class to make this function more easy to use in another code parts 
+    def text_boxes(self, text, row, column, padx, pady):
+        #using CTkLabel from customtkinter do design your text box were we pass there arguments, and i am anchor my text to northwest and expand my text box to right and left (sticky)    
+        textBox = tk.Label(self ,text=text,padx=padx,pady=pady,anchor= 'nw')
+        textBox.grid(row=row,column=column,padx=padx,pady=pady,sticky='ew')  
      
-        
+class textField():
+    def text_field(frame,row,column,padx,pady,textfield):
+        # sourcery skip: instance-method-first-arg-name
+        #using tk.Entry from tkinter to design our text box were we pass this arguments ,and expand my text box to right and left (sticky) and with my bind i am erasing all inside the textfield      
+       
+       
+       
+        field = tk.Entry(frame, width=70,fg='grey') 
+        field.insert(0, textfield)
     
+        field.bind("<FocusIn>", lambda e: field.delete('0','end'))
+        field.grid(row=row,column=column,padx=padx,pady=pady,sticky='ew')
+                
+    
+class frameDatabase():
+    def frame_database(frame):
 
+        # change to tk.labelframe because with the ctklabel its not inserting text 
+        data_widget_frame = ttk.Frame(frame)
+        data_widget_frame.grid(row=1,column=0,pady=10)
+        treeScroll = ttk.Scrollbar(data_widget_frame)
+        treeScroll.pack(side= 'right',fill='y')
+        
+        cols = ("First Name","Last Name", "Phone", "Address", "Email")
+        treeview = ttk.Treeview(data_widget_frame, show='headings', yscrollcommand=treeScroll.set, columns=cols ,height=13)
+        treeview.column('First Name',width=100)
+        treeview.column('Last Name',width=100)
+        treeview.column('Phone',width=100)
+        treeview.column('Address',width=100)
+        treeview.column('Email',width=100)
+        treeview.pack
+       
