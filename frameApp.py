@@ -3,6 +3,11 @@ import customtkinter
 from tkinter import ttk
 from customtkinter import *
 import tkinter as tk
+from dataBase_sqlite import Database
+
+
+
+
 
 class frameApp(customtkinter.CTk):
     def __init__(self):
@@ -13,11 +18,11 @@ class frameApp(customtkinter.CTk):
         self._set_appearance_mode('dark')
         
         #using ctkframe to create a new frame inside the main frame to be more easy to manipulate 
-        frame = tk.LabelFrame(self)
+        frame = tk.Frame(self)
         frame.pack()
         
         # change to tk.labelframe because with the ctklabel its not inserting text 
-        widget_frame = tk.LabelFrame(frame, text= "Insert Data")
+        widget_frame = tk.LabelFrame(frame, text= "Insert Data",padx=7,pady=7)
         widget_frame.grid(row=0,column=0,sticky='ew')
 
 
@@ -36,7 +41,7 @@ class frameApp(customtkinter.CTk):
         textField.text_field(widget_frame,4,1,5,5,'Accept any number or words and need @')
         
         #calling our database frame
-        frameDatabase.frame_database(frame)
+        frameDatabase.frame_database(self)
         
         
         self.mainloop()
@@ -63,20 +68,59 @@ class textField():
                 
     
 class frameDatabase():
-    def frame_database(frame):
+      
+    def frame_database(self):
 
         # change to tk.labelframe because with the ctklabel its not inserting text 
-        data_widget_frame = ttk.Frame(frame)
-        data_widget_frame.grid(row=1,column=0,pady=10)
-        treeScroll = ttk.Scrollbar(data_widget_frame)
+        frame = tk.Frame(self)
+        frame.pack()
+        self.dataBase1 = Database()
+        
+    
+        
+        self.data_widget_frame = tk.LabelFrame(frame, text= "Insert Data")
+        self.data_widget_frame.grid(row=0,column=0,sticky='ew')
+
+        treeScroll = ttk.Scrollbar(self.data_widget_frame)
         treeScroll.pack(side= 'right',fill='y')
         
         cols = ("First Name","Last Name", "Phone", "Address", "Email")
-        treeview = ttk.Treeview(data_widget_frame, show='headings', yscrollcommand=treeScroll.set, columns=cols ,height=13)
-        treeview.column('First Name',width=100)
-        treeview.column('Last Name',width=100)
-        treeview.column('Phone',width=100)
-        treeview.column('Address',width=100)
-        treeview.column('Email',width=100)
-        treeview.pack
-       
+        self.treeview = ttk.Treeview(self.data_widget_frame, show='headings', yscrollcommand=treeScroll.set, columns=cols ,height=13,padding=5)
+        self.treeview.column('First Name',width=100)
+        self.treeview.column('Last Name',width=100)
+        self.treeview.column('Phone',width=100)
+        self.treeview.column('Address',width=100)
+        self.treeview.column('Email',width=100)
+        
+        self.treeview.heading('First Name',text='First Name')
+        self.treeview.heading('Last Name',text='Last Name')
+        self.treeview.heading('Phone',text='Phone')
+        self.treeview.heading('Address',text='Address')
+        self.treeview.heading('Email',text='Email')
+        
+        
+        frameDatabase.insertData(self)
+        
+        self.treeview.pack()
+        
+        treeScroll.config(command=self.treeview.yview)
+     
+   
+    def insertData(self):
+       #self.treeview.delete(*self.treeview.get_children())
+       new=self.dataBase1.populateTable()
+       i = -1
+       for data in new:
+           i=i+1
+           self.treeview.insert('',i, text = new[i][1:2], values=new[i][2:7])
+        
+        
+            
+             
+             
+        
+        
+
+        
+
+           
